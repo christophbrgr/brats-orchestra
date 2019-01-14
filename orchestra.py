@@ -52,6 +52,12 @@ class Orchestra(object):
     def getNumberOfContainers(self):
         return len(self.containers)
 
+    def runDummyContainer(self):
+        client = docker.from_env()
+        cid = client.containers.run("ubuntu", "echo hello world")
+        cid.logs()
+        return True
+        
     def runContainer(self, id, directory):
         """
         Runs one container on one patient folder
