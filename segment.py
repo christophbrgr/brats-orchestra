@@ -140,13 +140,13 @@ def run_container(img_id, commands, folder, mount):
     # start timing of execution
     start = time.time()
     # assemble a new container using the docker api
-    container_id = client.create_container(img_id, command=commands,
-    stdin_open=True, tty=True, volumes=[folder],
-    host_config=client.create_host_config(binds=[mountpoint,]),
-    detach=False)
+    # container_id = client.create_container(img_id, command=commands,
+    # stdin_open=True, tty=True, volumes=[folder],
+    # host_config=client.create_host_config(binds=[mountpoint,]),
+    # detach=False)
     try:
         container_id = client.containers.run(img_id, command=commands, volumes=[folder],
-        host_config=client.create_host_config(binds=[mountpoint,]), runtime=nvidia)
+        host_config=client.create_host_config(binds=[mountpoint,]), runtime=runc)
         # client.start(container_id, runtime=nvidia)
     except docker.errors.APIError as fail:
         print(fail)

@@ -13,11 +13,12 @@ __author__ = 'Christoph Berger'
 import sys
 from pprint import pprint
 import json
+import docker
 
 import util.filemanager as filemanager
 
 class Orchestra(object):
-    def __init__(self, directory, config):
+    def __init__(self, containers, config):
         """ Init the orchestra class with placeholders
         """
         self.noOfContainers = 0
@@ -25,29 +26,54 @@ class Orchestra(object):
         self.config = []
         self.directory = None
         self.verbose = True
+        # setup docker api:
+        # self.docker = docker.from_env()
         try: 
-            containerfile = open(directory, 'r')
+            containerfile = open(containers, 'r')
             configfile = open(config, 'r')
             self.containers = json.load(containerfile)
             self.config = json.load(configfile)
             self.noOfContainers = len(self.containers.keys())
+            containerfile.close()
+            configfile.close()
         except IOError as e: 
             print('I/O error({0}): {1}'.format(e.errno, e.strerror))
+            raise
         except ValueError:
             print('Invalid configuration file')
+            raise
         except:
             print('Unexpected Error!')
             raise
 
-    def printObject(self):
-        """ Print the object contents for debugging
-        """
-        print('The containers to run:')
-        pprint(self.containers)
-        print('The config file contents:')
-        pprint(self.config)
+    def getContainerName(self, index):
+        return self.containers[index]['name']
 
-    def runContainers(self):
+    def getNumberOfContainers(self):
+        return len(self.containers)
+
+    def runContainer(self, id, directory):
+        """
+        Runs one container on one patient folder
+        """
+        try:
+            client = docker.from_env()
+            container_id = client.containers.run(id, command=self.containers[id]['command'], volumes=[directory],
+            host_config=client.create_host_config(binds=[self.containers[id]['mountpoint'],]), runtime=runc)
+            container_id.logs()
+            client.wait(container_id)
+            # should the container not stop in time, it is manually stopped
+            client.stop(container_id)
+        except 	docker.errors.APIError as fail:
+            print(fail)
+            return False
+        client.remove_container(container_id)
+        print('Container run successful')
+        return True
+
+
+
+    def runIterate(self):
         """ Loads the config file with a list of available containers
         """
         # processes the config details

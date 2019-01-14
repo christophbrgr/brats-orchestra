@@ -10,21 +10,45 @@
 __version__ = '0.1'
 __author__ = 'Christoph Berger'
 
+import unittest
 import os
 from orchestra import Orchestra
 
-def orchestraInitTests():
-    config = os.path.abspath('config.json')
-    directory = os.path.abspath('directory.json')
-    x = Orchestra(directory, config)
-    Orchestra.printObject(x)
+class TestOrchestraSetup(unittest.TestCase):
+    """
+    Testing my Orchestra, yeah
+    """
+    def testConfigSuccess(self):
+        config = os.path.abspath('config.json')
+        containers = os.path.abspath('containers.json')
+        print('Testing Loading of Container ....')
+        orchestra = Orchestra(containers, config)
+        self.assertEqual('mic-dkfz', orchestra.getContainerName(index='mic-dkfz'))
+    
+    def testContainerCount(self):
+        config = os.path.abspath('config.json')
+        containers = os.path.abspath('containers.json')
+        print('Testing Container Count...')
+        orchestra = Orchestra(containers, config)
+        self.assertEqual(4, orchestra.getNumberOfContainers())
 
-def orchestraDockerDry():
-    config = os.path.abspath('config.json')
-    directory = os.path.abspath('directory.json')
-    x = Orchestra(directory, config)
-    x.runContainers()
+    def testInvalidFile(self):
+        directory = 'brr.json'
+        config = 'coooo.json'
+        with self.assertRaises(IOError):
+            orchestra = Orchestra(directory, config)
+
+class TestOrchestraDocker(unittest.TestCase):
+    def testDockerSetup(self):
+        self.assertEqual(1, 1, msg='Docker plugin missing')
+    
+    def testRunSingleContainer(self):
+        config = os.path.abspath('config-tests.json')
+        containers = os.path.abspath('containers.json')
+        orchestra = Orchestra(containers, config)
+        directory = os.path.abspath('/Users/christoph/Documents/University/Uni/HiWi/IBBM/Testdata/Brats17_CBICA_AAM_1')
+        self.assertTrue(orchestra.runContainer('econib', directory))
+
 
 if __name__ == '__main__':
-    orchestraInitTests()
-    orchestraDockerDry()
+    unittest.main()
