@@ -58,8 +58,7 @@ class Orchestra(object):
         """
         try:
             client = docker.from_env()
-            container_id = client.containers.run(id, command=self.containers[id]['command'], volumes=[directory],
-            host_config=client.create_host_config(binds=[self.containers[id]['mountpoint'],]), runtime=runc)
+            container_id = client.containers.run(id, command=self.containers[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.containers[id]['mountpoint'],]))
             container_id.logs()
             client.wait(container_id)
             # should the container not stop in time, it is manually stopped
