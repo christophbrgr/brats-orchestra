@@ -14,6 +14,7 @@ import sys
 from pprint import pprint
 import json
 import docker
+import os
 
 import util.filemanager as filemanager
 
@@ -52,12 +53,15 @@ class Orchestra(object):
     def getNumberOfContainers(self):
         return len(self.containers)
 
-    def runDummyContainer(self):
+    def runDummyContainer(self, stop=False):
         client = docker.from_env()
-        cid = client.containers.run("ubuntu", "echo hello world")
-        cid.logs()
-        return True
-        
+        container = client.containers.run('hello-world', detach=True)
+        print(container.logs())
+        if stop:
+            container.stop()
+        container.reload()
+        return container.status, container
+
     def runContainer(self, id, directory):
         """
         Runs one container on one patient folder
@@ -93,3 +97,11 @@ class Orchestra(object):
             # patients in the root directory by itself) and a standard
             # container (needs to be called for each patient individually)
             print('Total containers run: ', self.noOfContainers)
+
+
+if __name__ == '__main__':
+    config = os.path.abspath('config-tests.json')
+    containers = os.path.abspath('containers.json')
+    orchestra = Orchestra(containers, config)
+    status, container = orchestra.runDummyContainer()
+    print(status)

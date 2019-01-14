@@ -12,6 +12,7 @@ __author__ = 'Christoph Berger'
 
 import unittest
 import os
+import docker
 from orchestra import Orchestra
 
 class TestOrchestraSetup(unittest.TestCase):
@@ -21,14 +22,14 @@ class TestOrchestraSetup(unittest.TestCase):
     def testConfigSuccess(self):
         config = os.path.abspath('config.json')
         containers = os.path.abspath('containers.json')
-        print('Testing Loading of Container ....')
+        #print('Testing Loading of Container.. ')
         orchestra = Orchestra(containers, config)
         self.assertEqual('mic-dkfz', orchestra.getContainerName(index='mic-dkfz'))
     
     def testContainerCount(self):
         config = os.path.abspath('config.json')
         containers = os.path.abspath('containers.json')
-        print('Testing Container Count...')
+        #print('Testing Container Count...')
         orchestra = Orchestra(containers, config)
         self.assertEqual(4, orchestra.getNumberOfContainers())
 
@@ -42,11 +43,27 @@ class TestOrchestraDocker(unittest.TestCase):
     def testDockerSetup(self):
         self.assertEqual(1, 1, msg='Docker plugin missing')
     
-    def runDummy(self):
+    def runDummySuccess(self):
         config = os.path.abspath('config-tests.json')
         containers = os.path.abspath('containers.json')
         orchestra = Orchestra(containers, config)
-        self.assertTrue(orchestra.runDummyContainer())
+        status, container = orchestra.runDummyContainer()
+        print(status)
+        print(container.status)
+        container.stop()
+        self.assertEqual('running', status, msg='Docker not able to run a container!')
+
+    @unittest.expectedFailure
+    def runDummyFailure(self):
+        config = os.path.abspath('config-tests.json')
+        containers = os.path.abspath('containers.json')
+        orchestra = Orchestra(containers, config)
+        status, container = orchestra.runDummyContainer(stop=True)
+        print(status)
+        print(container.status)
+        container.stop()
+        self.assertEqual('running', status, msg='Docker not able to run a container!')
+
 
     @unittest.skip('Not yet in use')
     def testRunSingleContainer(self):
