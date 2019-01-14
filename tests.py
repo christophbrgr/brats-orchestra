@@ -42,7 +42,7 @@ class TestOrchestraDocker(unittest.TestCase):
     def testDockerSetup(self):
         self.assertEqual(1, 1, msg='Docker plugin missing')
     
-    def runDummy(self:
+    def runDummy(self):
         config = os.path.abspath('config-tests.json')
         containers = os.path.abspath('containers.json')
         orchestra = Orchestra(containers, config)
