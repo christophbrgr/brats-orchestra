@@ -100,5 +100,5 @@ class Orchestra(object):
 if __name__ == '__main__':
     config = os.path.abspath('config-tests.json')
     orchestra = Orchestra(config)
-    status, container = orchestra.runDummyContainer()
+    status, container, client = orchestra.runDummyContainer()
     print(status)

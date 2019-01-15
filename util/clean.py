@@ -15,7 +15,7 @@ __author__ = 'Christoph Berger'
 
 import os
 import argparse
-import filemanager as filemanager
+import util.filemanager as filemanager
 
 # parse arguments for input, output directories and flags
 parser = argparse.ArgumentParser()

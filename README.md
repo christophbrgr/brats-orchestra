@@ -1,6 +1,8 @@
 # brats-orchestra
 BraTS ensemble code based on the Docker images used in the BraTS Challenge 2018
 
+* My vision is to have a Python module for Brain Tumor Segmentations that dynamically pulls Docker images with segmentation code and runs them with new data to make research easier and spread the highly performing methods we've seen in the BraTS challenge - help appreciated! *
+
 ##### Author: Christoph Berger
 ##### Version: 0.1
 
