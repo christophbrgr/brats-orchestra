@@ -64,15 +64,17 @@ class Orchestra(object):
         """
         try:
             client = docker.from_env()
-            container_id = client.containers.run(id, command=self.config[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.config[id]['mountpoint'],]))
-            container_id.logs()
-            client.wait(container_id)
+            container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, detach=True, remove=True)
+            #container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.config[id]['mountpoint'],]))
+            print(container.logs())
+            container.wait()
             # should the container not stop in time, it is manually stopped
-            client.stop(container_id)
+            container.stop()
         except 	docker.errors.APIError as fail:
             print(fail)
             return False
-        client.remove_container(container_id)
+        container.remove()
+        client.close()
         print('Container run successful')
         return True
 

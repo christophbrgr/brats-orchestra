@@ -55,20 +55,25 @@ class TestDocker(unittest.TestCase):
         status, container, client = orchestra.runDummyContainer()
         container.stop()
         self.assertEqual('running', status, msg='Docker not able to run a container!')
+        container.remove()
         client.close()
 
     @unittest.expectedFailure
     def testDummyFailure(self):
         config = os.path.abspath('config-tests.json')
         orchestra = Orchestra(config)
-        with self.assertWarnsRegex(expected_regex='ResourceWarning'):
+        with self.assertWarnsRegex(expected_warning='ResourceWarning', expected_regex='ResourceWarning'):
             status, container, client = orchestra.runDummyContainer(stop=True)
             container.stop()
             self.assertEqual('running', status, msg='Docker not able to run a container!')
+            container.remove()
             client.close()
 
 
-    @unittest.skip('Not yet in use')
+class TestSegmentation(unittest.TestCase):
+    """
+    Time-Intense tests with actual segmentation
+    """
     def testRunSingleContainer(self):
         config = os.path.abspath('config-tests.json')
         orchestra = Orchestra(config)
