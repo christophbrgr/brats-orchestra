@@ -14,6 +14,7 @@ Some of the fusion results are pre-published in this summarizing manuscript: htt
 Please contact me if you intend to use parts of this work for your research, we'd be thrilled to hear about it. 
 
 Current functionality:
+- `orchestra.py` new master class which returns an Orchestra-Object set up to perform segmentations. Initialize the object with a config.json file containing a list of the containers to use for this segmentation round and with a containers.json file where all the metadata for those containers is stored. *Still work in progress*
 - `segment.py` is the front-end script to manage Docker containers for segmentation tasks and organises files to work with the containers
 - `fusion/fusion.py` uses the resulting individual fusions to create a final result (using various methods)
 - `util/` contains various scripts to manage files on the filesystem, calculate metrics for segmentation performance, load and store medical images and more
