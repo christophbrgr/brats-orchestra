@@ -52,11 +52,11 @@ class Orchestra(object):
     def runDummyContainer(self, stop=False):
         client = docker.from_env()
         container = client.containers.run('hello-world', detach=True)
-        print(container.logs())
+        #print(container.logs())
         if stop:
             container.stop()
         container.reload()
-        return container.status, container
+        return container.status, container, client
 
     def runContainer(self, id, directory):
         """

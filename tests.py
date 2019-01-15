@@ -49,24 +49,23 @@ class TestDocker(unittest.TestCase):
     def testDockerSetup(self):
         self.assertEqual(1, 1, msg='Docker plugin missing')
 
-    def runDummySuccess(self):
+    def testDummySuccess(self):
         config = os.path.abspath('config-tests.json')
         orchestra = Orchestra(config)
-        status, container = orchestra.runDummyContainer()
-        print(status)
-        print(container.status)
+        status, container, client = orchestra.runDummyContainer()
         container.stop()
         self.assertEqual('running', status, msg='Docker not able to run a container!')
+        client.close()
 
-    @unittest.skip('not yet in use')
-    def runDummyFailure(self):
+    @unittest.expectedFailure
+    def testDummyFailure(self):
         config = os.path.abspath('config-tests.json')
         orchestra = Orchestra(config)
-        status, container = orchestra.runDummyContainer(stop=True)
-        print(status)
-        print(container.status)
-        container.stop()
-        self.assertEqual('running', status, msg='Docker not able to run a container!')
+        with self.assertWarnsRegex(expected_regex='ResourceWarning'):
+            status, container, client = orchestra.runDummyContainer(stop=True)
+            container.stop()
+            self.assertEqual('running', status, msg='Docker not able to run a container!')
+            client.close()
 
 
     @unittest.skip('Not yet in use')
@@ -78,4 +77,4 @@ class TestDocker(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(verbosity=2)
