@@ -326,30 +326,8 @@ def getScore(root, gt_root, score=None, file='gt.nii.gz', method='wt', verbose=T
         print (scores)
     f.close()
 
-"""
-def gtConverter(path='/Users/christoph/Documents/University/Uni/Bachelorarbeit/Testdaten/gt_scoring', verbose=True):
-    # exported to MATLAB
-    eng = matlab.engine.start_matlab()
-    eng.cd('nifti_conversion/')
-    ret = eng.convert_nii(path, nargout=1)
-    if verbose:
-        print('Number or files converted:', ret)
-"""
 def fullScore(s_dir='/Users/christoph/Documents/Uni/Bachelorarbeit/Testdaten/Complete_Results', gt_dir='/Users/christoph/Documents/Uni/Bachelorarbeit/Testdaten/testing_nii_LABELS'):
     getScore(s_dir, gt_dir, score='ppv', file='gt.nii', method='wt', verbose=True)
     getScore(s_dir, gt_dir, score='ppv', file='gt.nii', method='at', verbose=True)
     getScore(s_dir, gt_dir, score='ppv', file='gt.nii', method='tc', verbose=True)
-
-def tests():
-    """
-    Simple tests to ensure correct scoring performance
-    """
-    test = np.array([[1,0,0,1],[1,1,0,0],[1,0,1,1],[0,0,0,0]])
-    truth = np.array([[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]])
-    assert  (2/3) == customScore(test, truth, method='dice')
-    assert 0.75 == customScore(test, truth, method='spec')
-    assert 0.625 == customScore(test, truth, method='sens')
-    pred1 = np.array([[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]],[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,3]],[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]],[[1,0,0,1],[1,0,0,1],[1,0,0,1],[1,0,0,1]]])
-    pred2 = np.array([[[0,1,1,0],[1,1,1,1],[1,1,0,1],[1,0,0,1]],[[1,0,0,1],[1,2,2,1],[0,3,1,1],[1,1,1,1]],[[0,0,0,0],[1,0,0,1],[1,0,0,1],[1,1,0,1]],[[1,1,0,1],[1,1,0,1],[1,1,0,1],[1,1,0,1]]])
-    print('DICE Pred1 vs Pred2: ', customScore(pred1, pred2, method='dice'))
-    print('DICE Pred2 vs Pred1: ', customScore(pred2, pred1, method='dice'))
+    
