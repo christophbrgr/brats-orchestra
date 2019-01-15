@@ -19,23 +19,19 @@ import os
 import util.filemanager as filemanager
 
 class Orchestra(object):
-    def __init__(self, containers, config):
+    def __init__(self, config):
         """ Init the orchestra class with placeholders
         """
         self.noOfContainers = 0
-        self.containers = []
         self.config = []
         self.directory = None
         self.verbose = True
         # setup docker api:
         # self.docker = docker.from_env()
         try: 
-            containerfile = open(containers, 'r')
             configfile = open(config, 'r')
-            self.containers = json.load(containerfile)
             self.config = json.load(configfile)
-            self.noOfContainers = len(self.containers.keys())
-            containerfile.close()
+            self.noOfContainers = len(self.config.keys())
             configfile.close()
         except IOError as e: 
             print('I/O error({0}): {1}'.format(e.errno, e.strerror))
@@ -48,10 +44,10 @@ class Orchestra(object):
             raise
 
     def getContainerName(self, index):
-        return self.containers[index]['name']
+        return self.config[index]['name']
 
     def getNumberOfContainers(self):
-        return len(self.containers)
+        return len(self.config)
 
     def runDummyContainer(self, stop=False):
         client = docker.from_env()
@@ -68,7 +64,7 @@ class Orchestra(object):
         """
         try:
             client = docker.from_env()
-            container_id = client.containers.run(id, command=self.containers[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.containers[id]['mountpoint'],]))
+            container_id = client.containers.run(id, command=self.config[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.config[id]['mountpoint'],]))
             container_id.logs()
             client.wait(container_id)
             # should the container not stop in time, it is manually stopped
@@ -87,9 +83,9 @@ class Orchestra(object):
         """
         # processes the config details
         for key, item in self.config.items():
-            img_id = self.containers[key]['id']
+            img_id = self.config[key]['id']
             # load the container command, default is empty
-            command = self.containers[key]['command']
+            command = self.config[key]['command']
             print(command)
             print(img_id)
             mount = '/data'
@@ -101,7 +97,6 @@ class Orchestra(object):
 
 if __name__ == '__main__':
     config = os.path.abspath('config-tests.json')
-    containers = os.path.abspath('containers.json')
-    orchestra = Orchestra(containers, config)
+    orchestra = Orchestra(config)
     status, container = orchestra.runDummyContainer()
     print(status)

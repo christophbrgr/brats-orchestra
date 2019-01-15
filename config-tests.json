@@ -1,5 +1,11 @@
 {
-    "econib":"yes",
-    "xfeng":"no",
-    "scan":"no"
+    "econib":{
+        "name":"econib",
+        "author":"Michal Marcinkiewicz",
+        "fileformat":"gz-b17",
+        "runtime":"runc",
+        "id":"econib/brats-2018",
+        "command":" ",
+        "mountpoint":"/data"
+    }
 }
