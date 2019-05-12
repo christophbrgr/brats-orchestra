@@ -52,7 +52,7 @@ class Orchestra(object):
     def runDummyContainer(self, stop=False):
         client = docker.from_env()
         container = client.containers.run('hello-world', detach=True)
-        #print(container.logs())
+        print(container.logs())
         if stop:
             container.stop()
         container.reload()
@@ -64,16 +64,14 @@ class Orchestra(object):
         """
         try:
             client = docker.from_env()
-            container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, detach=True, remove=True)
+            # set runtime for startup: either nvidia or runc
+            container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=True, remove=True)
             #container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes=[directory], host_config=client.create_host_config(binds=[self.config[id]['mountpoint'],]))
             print(container.logs())
             container.wait()
-            # should the container not stop in time, it is manually stopped
-            container.stop()
-        except 	docker.errors.APIError as fail:
+        except docker.errors.APIError as fail:
             print(fail)
             return False
-        container.remove()
         client.close()
         print('Container run successful')
         return True
@@ -100,5 +98,7 @@ class Orchestra(object):
 if __name__ == '__main__':
     config = os.path.abspath('config-tests.json')
     orchestra = Orchestra(config)
-    status, container, client = orchestra.runDummyContainer()
+    dir = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/Brats17_CBICA_AAM_1'
+    #status, container, client = orchestra.runDummyContainer()
+    status = orchestra.runContainer('econib', dir)
     print(status)
