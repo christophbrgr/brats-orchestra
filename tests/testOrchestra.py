@@ -15,6 +15,7 @@ import os
 import docker
 import importlib
 from orchestra import Orchestra
+#import orchestra
 
 class TestOrchestraSetup(unittest.TestCase):
     """

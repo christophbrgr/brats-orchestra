@@ -15,6 +15,8 @@ from pprint import pprint
 import json
 import docker
 import os
+#set id of gpu to use for computations
+gpu = "0" 
 
 import util.filemanager as filemanager
 
@@ -28,6 +30,9 @@ class Orchestra(object):
         self.verbose = True
         # setup docker api:
         # self.docker = docker.from_env()
+        # set environment variables to limit GPU usage
+        os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
+        os.environ["CUDA_VISIBLE_DEVICES"]=gpu
         try: 
             configfile = open(config, 'r')
             self.config = json.load(configfile)
@@ -96,9 +101,10 @@ class Orchestra(object):
 
 
 if __name__ == '__main__':
-    config = os.path.abspath('config-tests.json')
+    #config = os.path.abspath('config-tests.json')
+    config = os.path.abspath('config.json')
     orchestra = Orchestra(config)
     dir = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/Brats17_CBICA_AAM_1'
     #status, container, client = orchestra.runDummyContainer()
-    status = orchestra.runContainer('econib', dir)
+    status = orchestra.runContainer('mic-dkfz', dir)
     print(status)
