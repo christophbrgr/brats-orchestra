@@ -16,7 +16,7 @@ import json
 import docker
 import os
 #set id of gpu to use for computations
-gpu = "0" 
+gpu = "7" 
 
 import util.filemanager as filemanager
 
