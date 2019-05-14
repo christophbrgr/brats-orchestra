@@ -17,7 +17,7 @@ if __name__ == '__main__':
     #config = os.path.abspath('config-tests.json')
     config = os.path.abspath('config.json')
     orchestra = Orchestra(config)
-    dir = '~/brats/brats18/ATW_1_gr-b17-f'
+    dir = os.path.abspath('~/brats/brats18/ATW_1_gr-b17-f')
     #status, container, client = orchestra.runDummyContainer()
     status = orchestra.runContainer('mic-dkfz', dir)
     print(status)
