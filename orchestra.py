@@ -73,9 +73,13 @@ class Orchestra(object):
             container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=False, remove=True)
             print(container.logs())
             container.wait()
-            print(container.logs())
         except docker.errors.APIError as fail:
             print(fail)
+            client.close()
+            return False
+        except AttributeError as fail: 
+            print(fail)
+            client.close()
             return False
         client.close()
         print('Container run successful')
@@ -107,4 +111,7 @@ if __name__ == '__main__':
     dir = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/Brats17_CBICA_AAM_1'
     #status, container, client = orchestra.runDummyContainer()
     status = orchestra.runContainer('mic-dkfz', dir)
-    print(status)
+    if(status):
+        print('Container run was succesful')
+    else:
+        print('Container run failed!')
