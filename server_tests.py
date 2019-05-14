@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! ~/brats/virtualenvs/orchestra/bin/python
 # -*- coding: utf-8 -*-
 # Author: Christoph Berger
 # Script for evaluation and bulk segmentation of Brain Tumor Scans
