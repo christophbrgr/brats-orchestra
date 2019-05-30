@@ -71,7 +71,7 @@ class Orchestra(object):
         try:
             client = docker.from_env()
             # set runtime for startup: either nvidia or runc
-            container = client.containers.run(self.config[id]['id'], environment=["CUDA_VISIBLE_DEVICES=0"]command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=True, remove=True)
+            container = client.containers.run(self.config[id]['id'], environment=["CUDA_VISIBLE_DEVICES=0"], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=True, remove=True)
             print(container.logs())
             container.wait()
         except docker.errors.APIError as fail:
