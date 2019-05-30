@@ -136,8 +136,8 @@ if __name__ == '__main__':
     orchestra = Orchestra(config)
     dir = '/home/bergerc/bratum/Bene_Segmentation'
     #status, container, client = orchestra.runDummyContainer()
-    status = orchestra.runIterate(dir, 'mic-dkfz')
-    status = orchestra.runIterate(dir, 'xfeng')
+    #status = orchestra.runIterate(dir, 'mic-dkfz')
+    status = orchestra.runIterate(dir, 'scan')
     if(status):
         print('Container run was succesful')
     else:
