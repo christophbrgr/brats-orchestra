@@ -17,7 +17,7 @@ import docker
 import os
 import errno
 #set id of gpu to use for computations
-gpu = "7" 
+gpu = "0" 
 
 import util.filemanager as filemanager
 
@@ -71,7 +71,7 @@ class Orchestra(object):
         try:
             client = docker.from_env()
             # set runtime for startup: either nvidia or runc
-            container = client.containers.run(self.config[id]['id'], command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=True, remove=True)
+            container = client.containers.run(self.config[id]['id'], environment=["CUDA_VISIBLE_DEVICES=0"]command=self.config[id]['command'], volumes={directory: {'bind': self.config[id]['mountpoint'], 'mode': 'rw'}}, runtime=self.config[id]['runtime'], detach=True, remove=True)
             print(container.logs())
             container.wait()
         except docker.errors.APIError as fail:
@@ -137,6 +137,7 @@ if __name__ == '__main__':
     dir = '/home/bergerc/bratum/Bene_Segmentation'
     #status, container, client = orchestra.runDummyContainer()
     status = orchestra.runIterate(dir, 'mic-dkfz')
+    status = orchestra.runIterate(dir, 'xfeng')
     if(status):
         print('Container run was succesful')
     else:
