@@ -120,7 +120,7 @@ class Orchestra(object):
                     if err.errno != errno.EEXIST:
                         raise
                 print('Calling Container: ', cid)
-                if not self.runContainer('cid', os.path.join(dir, fn)):
+                if not self.runContainer(cid, os.path.join(dir, fn)):
                     print('ERROR: Run failed for patient ', fn, ' with container', cid)
                     return False
                 #TODO: rename folder and prepend pat_id
