@@ -134,10 +134,11 @@ if __name__ == '__main__':
     #config = os.path.abspath('config-tests.json')
     config = os.path.abspath('config.json')
     orchestra = Orchestra(config)
-    dir = '/home/bergerc/bratum/Bene_Segmentation'
+    #dir = '/home/bergerc/bratum/Bene_Segmentation'
+    dir = '/Users/christoph/Documents/Uni/HiWi/IBBM/BRATUM/Bene_Segmentation/brats_tests'
     #status, container, client = orchestra.runDummyContainer()
     #status = orchestra.runIterate(dir, 'mic-dkfz')
-    status = orchestra.runIterate(dir, 'scan')
+    status = orchestra.runIterate(dir, 'mic-dkfz')
     if(status):
         print('Container run was succesful')
     else:
