@@ -6,21 +6,18 @@ BraTS ensemble code based on the Docker images used in the BraTS Challenge 2018
 
 ## Prerequisites
 
-### Requirements
-
-You need to have a working installation of Docker running on your system. Also, install all other required packages for this code to run using:
-
-```bash
-pip install -r requirements.txt
-```
-
 ### Installation
+
+You have to have a working version of Docker on your system. If you don't, please download it [here](https://docs.docker.com/install/). Be sure to check if your Docker installation can actually use all necessary resources (esp. on Mac and Windows, there may be restrictions in the default installation, you can change those in the preferences).
 
 ```bash
 git clone https://github.com/christophbrgr/brats-orchestra
 cd brats-orchestra
 pip install -e .
 ```
+
+*Do keep in mind that some of the algorithms here have a very long processing time (e.g. an hour for one scan), so don't be surprised if your computer is nonresponsive during computations. We suggest running the code on a remote server to offload the computations.*
+*All algorithms with GPU acceleration have been tested with Nvidia Titan X or above GPU.* While we are pretty confident that most algorithms should also work on weaker machines, we'd like to point out that some failures may be causes by resource exhaustion.
 
 ## Usage instructions
 
@@ -83,5 +80,5 @@ This software was created as part of the BraTUM.DB project and in the context of
 
 ### Current Tasks
 
-- log progress in containers
 - error handling for failed segmentations
+- please note that the test cases for the orchestra have not been updated yet (shame on me!)
