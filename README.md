@@ -44,10 +44,9 @@ seg.segment(t1, t2, t1c, fla, cid='mocker', outputPath)
 ### Command Line Interface
 
 *You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
+
 ```bash
 (orchestra) Christophs-MBP:brats-orchestra christoph$ python orchestra/cli.py 
-usage: cli.py [-h] [-l] -t1 T1 -t1c T1C -t2 T2 -fla FLA -d DOCKER -o OUTPUT
-              [-v] [-c CONFIG] [-g]
 cli.py: error: the following arguments are required: -t1, -t1c, -t2, -fla, -d/--docker, -o/--output
 usage: cli.py [-h] [-l] -t1 T1 -t1c T1C -t2 T2 -fla FLA -d DOCKER -o OUTPUT
               [-v] [-c CONFIG] [-g]
