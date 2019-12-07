@@ -16,8 +16,9 @@ cd brats-orchestra
 pip install -e .
 ```
 
-*Do keep in mind that some of the algorithms here have a very long processing time (e.g. an hour for one scan), so don't be surprised if your computer is nonresponsive during computations. We suggest running the code on a remote server to offload the computations.*
-*All algorithms with GPU acceleration have been tested with Nvidia Titan X or above GPU.* While we are pretty confident that most algorithms should also work on weaker machines, we'd like to point out that some failures may be causes by resource exhaustion.
+**Do keep in mind that some of the algorithms here have a very long processing time (e.g. an hour for one scan), so don't be surprised if your computer is nonresponsive during computations. We suggest running the code on a remote server to offload the computations.**
+
+**All algorithms with GPU acceleration have been tested with Nvidia Titan X or above GPU.** While we are pretty confident that most algorithms should also work on weaker machines, we'd like to point out that some failures may be causes by resource exhaustion.
 
 ## Usage instructions
 
