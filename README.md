@@ -34,6 +34,8 @@ seg = segmentor.Segmentor()
 seg.segment(t1, t2, t1c, fla, cid='mocker', outputPath)
 ```
 
+Check the file `dockers.json` for a list of all available containers. This list can also be found [here.](https://github.com/BraTS/Instructions/blob/master/Repository_Links.md#brats-2018)
+
 ### Fusionator
 
 *This part is work in progress* 
