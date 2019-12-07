@@ -53,13 +53,22 @@
         "command":"python evaluate.py",
         "mountpoint":"/data"
     },
-    "mocker":{
-      "name":"mocker",
-      "author":"Christoph Berer",
-      "fileformat":"gz-b17",
-      "runtime":"runc",
-      "id":"cberger/mockdock",
-      "command":" ",
-      "mountpoint":"/data"
-  }
+    "zyx_2019":{
+        "name":"zyx_2019",
+        "author":"yuanxing.zhao@nlpr.ia.ac.cn",
+        "fileformat":"gz-b18",
+        "runtime":"nvidia",
+        "id":"jiaocha/zyxbrats",
+        "command":" ",
+        "mountpoint":"/data"
+    },
+    "scan_2019":{
+        "name":"scan_2019",
+        "author":"Richard McKinley - richard.mckinley@gmail.com",
+        "fileformat":"gz-b18",
+        "runtime":"nvidia",
+        "id":"scan/brats2019",
+        "command":"python DeepSCAN_BRATS_2019.py",
+        "mountpoint":"/data"
+    }
 }

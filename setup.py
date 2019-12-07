@@ -23,6 +23,7 @@ setuptools.setup(
         'console_scripts': [
             'brats-segment = orchestra.cli:segmentation',
             'brats-fuse = orchestra.cli:fusion',
+            'brats-orchestra = orchestra.cli:main'
         ],
       },
     classifiers=[

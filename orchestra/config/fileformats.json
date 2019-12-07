@@ -28,5 +28,11 @@
         "t1c":"t1ce.nii",
         "t2":"t2.nii",
         "fla":"flair.nii"
+    },
+    "gz-b18":{
+        "t1":"pat_t1.nii.z",
+        "t1c":"pat_t1ce.nii.gz",
+        "t2":"pat_t2.nii.gz",
+        "fla":"pat_flair.nii.gz"
     }
 }
