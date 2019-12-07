@@ -16,4 +16,7 @@ def main():
     pass
 
 def fusion():
-    pass
+    print('This call worked!')
+
+def segmentation():
+    print('This call worked!')
