@@ -14,10 +14,35 @@ import os
 import numpy as np
 import glob
 import shutil
-import fnmatch 
-import util.own_itk as oitk
+import fnmatch
+from . import own_itk as oitk
 
 modalities = ['fla','t1','t1c','t2']
+
+def bratsNormalize(image=None, bm=None, bias=0.0001):
+    '''
+    Provides normalization of BRATS images to the
+    intensity interval 0...1 and ensures that the background is
+    entirely 0
+    The bias value ensures that no brain voxel becomes 0
+    '''
+    if bm is None or image is None:
+        print('[Normalize][Error] You have to pass an image and a corresponding brain mask!')
+        return None
+    if bm.shape != image.shape:
+        print('[Normalize][Error] Your image and mask dimensions don\'t match!')
+        return None
+    # set bg to zero before calculating anything
+    image = np.multiply(image,bm)
+    # shift range to 0...x
+    image = image - image.min()
+    # add bias value to avoid 0 voxels
+    image += bias
+    # adjust range to bias...1
+    image = np.divide(image, image.max())
+    # nultiply with mask again to get a bg of 0
+    image = np.multiply(image, bm)
+    return image
 
 def loadGT(path, patid, file='gt.nii.gz', verbose=True):
     """ Loads the Ground Truth for a specified patient

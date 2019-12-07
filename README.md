@@ -1,49 +1,58 @@
 # brats-orchestra
 BraTS ensemble code based on the Docker images used in the BraTS Challenge 2018
 
-*My vision is to have a Python module for Brain Tumor Segmentations that dynamically pulls Docker images with segmentation code and runs them with new data to make research easier and spread the highly performing methods we've seen in the BraTS challenge - help appreciated!*
+*Author: Christoph Berger*
+*Version: 0.0.8*
 
-##### Author: Christoph Berger
-##### Version: 0.1
-
-This code was part of my Bachelor`s thesis submitted at the Technical University of Munich in October 2018. The version published here is in the process of being adapted and built into a more general purpose segmentation pipeline to support more inputs and greater modularity.
-
-This code makes use of containers taken from the BraTS Algorithmic repository, which can be found here: https://github.com/BraTS/Instructions/
-
-Further info regarding the BraTS challenge (rules, how to particpate, publications) can be found at the official homepage: https://www.med.upenn.edu/sbia/brats2018.html
-
-Some of the fusion results are pre-published in this summarizing manuscript: https://arxiv.org/abs/1811.02629
-Please contact me if you intend to use parts of this work for your research, we'd be thrilled to hear about it. 
-
-Current functionality:
-- `orchestra.py` new master class which returns an Orchestra-Object set up to perform segmentations. Initialize the object with a config.json file containing a list of the containers to use for this segmentation round and with a containers.json file where all the metadata for those containers is stored. *Still work in progress*
-- `segment.py` is the front-end script to manage Docker containers for segmentation tasks and organises files to work with the containers
-- `fusion/fusion.py` uses the resulting individual fusions to create a final result (using various methods)
-- `util/` contains various scripts to manage files on the filesystem, calculate metrics for segmentation performance, load and store medical images and more
-
-### Usage of segment.py
-```
-python3 segment.py /brats/dir/path/
-```
-`/brats/dir/path/` is the path where all subject folders are located, which must look like this:
-- `/brats/dir/path/`
-  - `pat123/`
-    - `flair.nii.gz`
-    - `t1.nii.gz`
-    - `t2.nii.gz`
-    - `t1c.nii.gz`
-  - `pat456/`
-    - `...`
-
-And so on.. Resulting segmentations will be placed into `pat123/pat123_<algorithm>_results/tumor_<algorithm>_class.nii.gz`
+## Prerequisites
 
 ### Requirements
+
 You need to have a working installation of Docker running on your system. Also, install all other required packages for this code to run using:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
+### Installation
+
+```bash
+git clone https://github.com/christophbrgr/brats-orchestra
+cd brats-orchestra
+pip install -e .
+```
+
+## Usage instructions
+
+The package contains two modules, the Segmentor and the Fusionator:
+
+### Segmentor
+
+This module can be used to segment files using the BraTS Algorithmic Repository. You pass 4 modalities preprocessed to conform to the BraTS standard (you can use the BraTS Preprocessor for that), an algorithm-id to specifiy which container should segment your images and an output path (including a filename!).
+
+```python
+from orchestra import segmentor
+seg = segmentor.Segmentor()
+# t1 and so on are paths to niftis, ouputpath should also be a nifti
+seg.segment(t1, t2, t1c, fla, cid='mocker', outputPath)
+```
+
+### Fusionator
+
+*This part is work in progress* 
+
+### Command Line Interface
+
+*You can also use all the segmentation and fusion features from the command line*
+*This part is work in progress.*
+
+## Other remarks
+
+### Attribution
+
+This software was created as part of the BraTUM.DB project and in the context of the Brain Tumor Segmentation challenge. Supported by Prof. Bjoern Menze, Florian Kofler and Dr. Benedikt Wiestler at the Technical University of Munich and the Department of Neuroradiology at the Clinic rechts der Isar in Munich. The BraTS Algroithmic Repository is a joint project with Spyridon Bakas of CBICA at the University of Pennsylvania, USA.
+
 ### Current Tasks
-- rebuild the configuration file system to use JSON and simplify I/O
-- compatibility for automated GPU segmentation using Nvidia-Docker
+
+- log progress in containers
+- error handling for failed segmentations

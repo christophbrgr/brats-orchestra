@@ -34,5 +34,32 @@
         "id":"xf4j/brats18",
         "command":"python /brats18/docker_run_survival.py",
         "mountpoint":"/data"
-    }
+    },
+    "lfb_rwth":{
+        "name":"lfb_rwth",
+        "author":"Leon Weninger",
+        "fileformat":"gz-b17-t1",
+        "runtime":"runc",
+        "id":"leonweninger/brats18_segmentation",
+        "command":" ",
+        "mountpoint":"/data"
+    },
+    "gbmnet":{
+        "name":"gbmnet",
+        "author":"Nicholas Nuechterlein",
+        "fileformat":"gz-b17-t1",
+        "runtime":"runc",
+        "id":"nknuecht/gbmnet18",
+        "command":"python evaluate.py",
+        "mountpoint":"/data"
+    },
+    "mocker":{
+      "name":"mocker",
+      "author":"Christoph Berer",
+      "fileformat":"gz-b17",
+      "runtime":"runc",
+      "id":"cberger/mockdock",
+      "command":" ",
+      "mountpoint":"/data"
+  }
 }

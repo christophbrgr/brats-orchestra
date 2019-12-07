@@ -1,4 +1,4 @@
-# VSCode Files 
+# VSCode Files
 .code-workspace
 .vscode/*
 .vscode/
@@ -15,7 +15,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -108,3 +107,8 @@ venv.bak/
 # mypy
 .mypy_cache/
 *.code-workspace
+
+# other folders containing data
+tmp/
+*tmp*
+*.nii.gz

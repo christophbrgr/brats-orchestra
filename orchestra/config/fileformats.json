@@ -1,0 +1,32 @@
+{
+    "gz-b17":{
+        "t1":"t1.nii.gz",
+        "t1c":"t1c.nii.gz",
+        "t2":"t2.nii.gz",
+        "fla":"flair.nii.gz"
+    },
+    "gz-b17-t1":{
+        "t1":"t1.nii.gz",
+        "t1c":"t1ce.nii.gz",
+        "t2":"t2.nii.gz",
+        "fla":"flair.nii.gz"
+    },
+    "gz-b17-f":{
+        "t1":"t1.nii.gz",
+        "t1c":"t1c.nii.gz",
+        "t2":"t2.nii.gz",
+        "fla":"fla.nii.gz"
+    },
+    "b17":{
+        "t1":"t1.nii",
+        "t1c":"t1c.nii",
+        "t2":"t2.nii",
+        "fla":"flair.nii"
+    },
+    "b17-t1":{
+        "t1":"t1.nii",
+        "t1c":"t1ce.nii",
+        "t2":"t2.nii",
+        "fla":"flair.nii"
+    }
+}
