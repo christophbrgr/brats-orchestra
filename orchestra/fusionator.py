@@ -47,6 +47,8 @@ class Fusionator(object):
         return 0
 
     def dirFuse(self, directory):
+        if self.method == 'all':
+            return
         candidates = []
         weights = []
         temp = None
