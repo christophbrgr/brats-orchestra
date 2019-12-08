@@ -1,8 +1,9 @@
 # brats-orchestra
+
 BraTS ensemble code based on the Docker images used in the BraTS Challenge 2018
 
-*Author: Christoph Berger*
-*Version: 0.0.8*
+**Author: Christoph Berger**
+**Version: 0.0.8**
 
 ## Prerequisites
 
@@ -18,7 +19,7 @@ pip install -e .
 
 **Do keep in mind that some of the algorithms here have a very long processing time (e.g. an hour for one scan), so don't be surprised if your computer is nonresponsive during computations. We suggest running the code on a remote server to offload the computations.**
 
-**All algorithms with GPU acceleration have been tested with Nvidia Titan X or above GPU.** While we are pretty confident that most algorithms should also work on weaker machines, we'd like to point out that some failures may be causes by resource exhaustion.
+**All algorithms with GPU acceleration have been tested with a Nvidia Titan X or above GPU.** While we are pretty confident that most algorithms should also work on weaker machines, we'd like to point out that some failures may be causes by resource exhaustion.
 
 ## Usage instructions
 
