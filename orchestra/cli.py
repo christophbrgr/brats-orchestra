@@ -78,7 +78,7 @@ def fusion():
     print('This call worked!')
 
 def segmentation():
-    print('This call worked!')
+    main()
 
 if __name__ == '__main__':
     main()
