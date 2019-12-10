@@ -16,8 +16,7 @@ setuptools.setup(
     zip_safe=False,
     install_requires=[
           'SimpleITK',
-          'numpy',
-          'pandas'
+          'numpy'
     ],
     entry_points={
         'console_scripts': [

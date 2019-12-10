@@ -41,13 +41,14 @@ class Segmentor(object):
         self.verbose = verbose
         self.tty = tty
         self.dockerGPU = newdocker
+        self.package_directory = op.dirname(op.abspath(__file__))
         # set environment variables to limit GPU usage
         os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'   # see issue #152
         os.environ['CUDA_VISIBLE_DEVICES']=gpu
         if config is None: 
-            config = 'orchestra/config/dockers.json'
+            config = op.join(self.package_directory, 'config', 'dockers.json')
         if fileformats is None:
-            self.fileformats = 'orchestra/config/fileformats.json'
+            self.fileformats = op.join(self.package_directory, 'config', 'fileformats.json')
         else:
             self.fileformats = fileformats
         try:
