@@ -195,7 +195,7 @@ class Segmentor(object):
         # switch between 
         inputs = {'t1':t1, 't2':t2, 't1c':t1c, 'fla':fla}
         # create temporary directory for storage
-        storage = tempfile.TemporaryDirectory(dir='orchestra/')
+        storage = tempfile.TemporaryDirectory(self.package_directory)
         tempDir = op.abspath(storage.name)
         resultsDir = op.join(tempDir, 'results')
         os.mkdir(resultsDir)
