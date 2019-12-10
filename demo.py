@@ -1,6 +1,7 @@
-from orchestra import segmentor
+from orchestra import segmentor, fusionator
 
 seg = segmentor.Segmentor(config='orchestra/config/dockers_demo.json')
+fus = fusionator.Fusionator(method='simple')
 
 t1 = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/BraTS19_CBICA_AQV_1/t1.nii.gz'
 t2 = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/BraTS19_CBICA_AQV_1/t2.nii.gz'
@@ -10,4 +11,7 @@ outpath = '/Users/christoph/Documents/Uni/HiWi/IBBM/BRATUM/Testdata/weborchestra
 #segmentor.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mocker', outputPath=None, verbose=True)
 #seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mocker', outputPath=outpath)
 #seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mocker', outputPath='file.nii.gz')
+fus.dirFuse('/Users/christoph/Desktop/brats_test')
+fus.dirFuse('/Users/christoph/Documents/Uni/HiWi/IBBM/BRATUM/Testdata/weborchestra/outputForOrc/')
+seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='simple', outputPath=outpath)
 seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mav', outputPath=outpath)
