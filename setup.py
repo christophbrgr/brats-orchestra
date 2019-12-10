@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='orchestra',
-    version='0.0.10',
+    version='0.0.11',
     author='Christoph Berger',
     author_email='c.berger@tum.de',
     description='Bulk segmentation for the BraTS challenge',
@@ -22,7 +22,7 @@ setuptools.setup(
         'console_scripts': [
             'brats-segment = orchestra.cli:segmentation',
             'brats-fuse = orchestra.cli:fusion',
-            'brats-orchestra = orchestra.cli:main'
+            'brats-orchestra = orchestra.cli:segmentation'
         ],
       },
     classifiers=[

@@ -38,30 +38,14 @@ seg.segment(t1, t2, t1c, fla, cid='mocker', outputPath)
 
 Check the file `dockers.json` for a list of all available containers. This list can also be found [here.](https://github.com/BraTS/Instructions/blob/master/Repository_Links.md#brats-2018)
 
-### Fusionator
-
-The current implementation provides three methods for segmentation fusion:
-
-1. General Majority Vote
-2. Binary Majority Vote
-3. SIMPLE (Selective and Iterative Method for Performance Level Estimation)
-
-Generalized majority voting implicitly takes all the labels present in the passed candidate segmentations, fuses each label individually by employing majority voting and then returns a numpy array with the fused labels.
-Binary majority voting uses the same principle but only works on binary labels (0 background, 1 foreground).
-SIMPLE is an iterative method for performance estimation of candidate segmentations which employs binary majority voting to estimate performance.
-
-**None of the methods employ any kind of domain knowledge which could improve performance. e.g. hierarchical labels.**
-
-*CLI support for fusion comes soon.*
-
-### Command Line Interface
+#### Command Line Interface for Segmentation
 
 *You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
 
 ```bash
-(orchestra) Christophs-MBP:brats-orchestra christoph$ python orchestra/cli.py 
-cli.py: error: the following arguments are required: -t1, -t1c, -t2, -fla, -d/--docker, -o/--output
-usage: cli.py [-h] [-l] -t1 T1 -t1c T1C -t2 T2 -fla FLA -d DOCKER -o OUTPUT
+(orchestra) Christophs-MBP:brats-orchestra christoph$ brats-segment
+brats-segment: error: the following arguments are required: -t1, -t1c, -t2, -fla, -d/--docker, -o/--output
+usage: brats-segment [-h] [-l] -t1 T1 -t1c T1C -t2 T2 -fla FLA -d DOCKER -o OUTPUT
               [-v] [-c CONFIG] [-g]
 
 Runs the Docker orchestra to segment and fuse segmentations based on theBraTS
@@ -77,7 +61,7 @@ optional arguments:
   -fla FLA              Path to the fla modality.
   -d DOCKER, --docker DOCKER
                         Container ID or method used for fusion. (mav, simple,
-                        all). Run brats-orchestra --list to display all
+                        all). Run brats-segment --list to display all
                         options.
   -o OUTPUT, --output OUTPUT
                         Path to the desired output file.
@@ -87,6 +71,44 @@ optional arguments:
   -g, --gpu             Pass this flag if your Docker version already supports
                         the --gpus flag.
 ```
+
+### Fusionator
+
+The current implementation provides three methods for segmentation fusion:
+
+1. General Majority Vote
+2. Binary Majority Vote
+3. SIMPLE (Selective and Iterative Method for Performance Level Estimation)
+
+Generalized majority voting implicitly takes all the labels present in the passed candidate segmentations, fuses each label individually by employing majority voting and then returns a numpy array with the fused labels.
+Binary majority voting uses the same principle but only works on binary labels (0 background, 1 foreground).
+SIMPLE is an iterative method for performance estimation of candidate segmentations which employs binary majority voting to estimate performance.
+
+**None of the methods employ any kind of domain knowledge which could improve performance. e.g. hierarchical labels.**
+
+#### Command Line Interface for Fusion
+
+*You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
+
+'''bash
+(orchestra) Christophs-MBP:brats-orchestra christoph$ brats-fuse -h
+usage: brats-fuse [-h] -i INPUT -m METHOD [-o OUTPUT] [-v]
+
+Runs the Docker orchestra to fuse segmentations. All inputs have to have equal
+shape and label values
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT
+                        Input directory containing all .nii.gz files to be
+                        fused
+  -m METHOD, --method METHOD
+                        Method for fusion: mav for majority voting, simple for
+                        SIMPLE
+  -o OUTPUT, --output OUTPUT
+                        Filename for the output in format filename.nii.gz
+  -v, --verbose         Verbose mode outputs log info to the command line.
+'''
 
 ## Other remarks
 
