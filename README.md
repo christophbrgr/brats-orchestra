@@ -40,7 +40,19 @@ Check the file `dockers.json` for a list of all available containers. This list 
 
 ### Fusionator
 
-*This part is work in progress* 
+The current implementation provides three methods for segmentation fusion:
+
+1. General Majority Vote
+2. Binary Majority Vote
+3. SIMPLE (Selective and Iterative Method for Performance Level Estimation)
+
+Generalized majority voting implicitly takes all the labels present in the passed candidate segmentations, fuses each label individually by employing majority voting and then returns a numpy array with the fused labels.
+Binary majority voting uses the same principle but only works on binary labels (0 background, 1 foreground).
+SIMPLE is an iterative method for performance estimation of candidate segmentations which employs binary majority voting to estimate performance.
+
+**None of the methods employ any kind of domain knowledge which could improve performance. e.g. hierarchical labels.**
+
+*CLI support for fusion comes soon.*
 
 ### Command Line Interface
 
