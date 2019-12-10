@@ -154,7 +154,7 @@ class Fusionator(object):
                                             result.min(), result.dtype)
         return result
 
-    def dirFuse(self, directory):
+    def dirFuse(self, directory, outputName=None):
         if self.method == 'all':
             return
         candidates = []
@@ -177,7 +177,10 @@ class Fusionator(object):
         elif self.method == 'simple':
             result = self.simple(candidates, weights)
         try:
-            oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, self.method + '_fusion.nii.gz'))
+            if outputName == None:
+                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, self.method + '_fusion.nii.gz'))
+            else:
+                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, outputName))
             logging.info('Segmentation Fusion with method {} saved in directory {}.'.format(self.method, directory))
         except Exception as e:
             print('Very bad, this should also be logged somewhere: ' + str(e))

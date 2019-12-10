@@ -26,15 +26,15 @@ from .util import filemanager as fm
 from . import fusionator
 
 #set id of gpu to use for computations
-gpu = "0"
+gpu = '0'
 
 class Segmentor(object):
     '''
     Now does it all!
     '''
     def __init__(self, config=None, fileformats=None, verbose=True, tty=False, newdocker=True):
-        """ Init the orchestra class with placeholders
-        """
+        ''' Init the orchestra class with placeholders
+        '''
         self.noOfContainers = 0
         self.config = []
         self.directory = None
@@ -42,8 +42,8 @@ class Segmentor(object):
         self.tty = tty
         self.dockerGPU = newdocker
         # set environment variables to limit GPU usage
-        os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
-        os.environ["CUDA_VISIBLE_DEVICES"]=gpu
+        os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'   # see issue #152
+        os.environ['CUDA_VISIBLE_DEVICES']=gpu
         if config is None: 
             config = 'orchestra/config/dockers.json'
         if fileformats is None:
@@ -75,24 +75,24 @@ class Segmentor(object):
         return len(self.config)
 
     def runDummyContainer(self, stop=False):
-        command = "docker run --rm -it hello-world"
+        command = 'docker run --rm -it hello-world'
         subprocess.check_call(command, shell = True)
 
     def runContainer(self, id, directory):
-        """
+        '''
         Runs one container on one patient folder
-        """
+        '''
         if self.tty:
-            command = "docker run --rm -it "
+            command = 'docker run --rm -it '
         else:
-            command = "docker run --rm "
+            command = 'docker run --rm '
         if self.config[id]['runtime'] == 'nvidia':
             if self.dockerGPU:
-                command = command + "--gpus all -v " + str(directory) + ":" + str(self.config[id]['mountpoint']) + " " + str(self.config[id]['id']) + " " + str(self.config[id]['command'])
+                command = command + '--gpus all -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
             else:
-                command = command + "--runtime=nvidia -v " + str(directory) + ":" + str(self.config[id]['mountpoint']) + " " + str(self.config[id]['id']) + " " + str(self.config[id]['command'])
+                command = command + '--runtime=nvidia -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         else:
-            command = command + "-v " + str(directory) + ":" + str(self.config[id]['mountpoint']) + " " + str(self.config[id]['id']) + " " + str(self.config[id]['command'])
+            command = command + '-v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         try:
             subprocess.check_call(command, shell = True)
         except Exception as e:
@@ -105,8 +105,8 @@ class Segmentor(object):
         return True
 
     def runIterate(self, dir, cid):
-        """ Iterates over a directory and runs the segmentation on each patient found
-        """
+        ''' Iterates over a directory and runs the segmentation on each patient found
+        '''
         logging.info('Looking for BRATS data directories..')
         for fn in os.listdir(dir):
             if not os.path.isdir(os.path.join(dir, fn)):
@@ -155,7 +155,7 @@ class Segmentor(object):
                 resultsDir = self._handleResult(cid, resultsDir, outputPath=saveLocation)
             else:
                 logging.exception('Container run for CID {} failed!'.format(cid))
-        fusion.dirFuse(outputDir)
+        fusion.dirFuse(outputDir, outputName)
     
     def singleSegment(self, tempDir, inputs, cid, outputName, outputDir):
         '''
@@ -201,7 +201,7 @@ class Segmentor(object):
         logging.debug(tempDir)
         logging.debug(resultsDir)
 
-        if cid == 'mav' or cid == 'simple':
+        if cid == 'mav' or cid == 'simple' or cid == 'all':
             # segment with all containers
             logging.info('Called singleSegment with method: ' + cid)
             self.multiSegment(tempDir, inputs, cid, outputName, outputDir)
@@ -220,7 +220,7 @@ class Segmentor(object):
         # Todo: Find segmentation result
         contents = glob.glob(op.join(directory,'*tumor*.nii*'))
         if len(contents) < 1:
-            logging.error("[Weborchestra - Filehandling][Error] No segmentation saved, the container run has most likely failed.")
+            logging.error('[Weborchestra - Filehandling][Error] No segmentation saved, the container run has most likely failed.')
         elif len(contents) > 1:
             logging.error('[Weborchestra - Filehandling][Warning] Multiple Segmentations Found')
             img = oitk.get_itk_image(contents[0])
