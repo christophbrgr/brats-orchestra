@@ -90,7 +90,7 @@ SIMPLE is an iterative method for performance estimation of candidate segmentati
 
 *You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
 
-'''bash
+```bash
 (orchestra) Christophs-MBP:brats-orchestra christoph$ brats-fuse -h
 usage: brats-fuse [-h] -i INPUT -m METHOD [-o OUTPUT] [-v]
 
@@ -108,7 +108,7 @@ optional arguments:
   -o OUTPUT, --output OUTPUT
                         Filename for the output in format filename.nii.gz
   -v, --verbose         Verbose mode outputs log info to the command line.
-'''
+```
 
 ## Other remarks
 
