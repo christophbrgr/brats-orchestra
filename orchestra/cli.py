@@ -19,6 +19,25 @@ def list_dockers():
     pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(seg.config)
 
+def list_docker_ids():
+    seg = segmentor.Segmentor()
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(seg.config.keys())
+
+def list_docker_gpu():
+    seg = segmentor.Segmentor()
+    print('all these images support GPU computations:')
+    for id in seg.config.keys():
+        if id['runtime'] == 'nvidia':
+            print(id)
+
+def list_docker_cpu():
+    seg = segmentor.Segmentor()
+    print('all these images support CPU computations:')
+    for id in seg.config.keys():
+        if id['runtime'] == 'runc':
+            print(id)
+
 def fusion():
     parser = argparse.ArgumentParser(description='Runs the Docker orchestra to fuse segmentations. All inputs have to have equal shape and label values')
     parser.add_argument('-i','--input', required=True,
@@ -53,6 +72,15 @@ def segmentation():
     parser.add_argument('-l', '--list',
                         help = 'List all models available for segmentation.',
                         action = 'store_true')
+    parser.add_argument('-ll', '--longlist',
+                        help = 'List all models available for segmentation with details.',
+                        action = 'store_true')
+    parser.add_argument('-lc', '--cpulist',
+                        help = 'List all models supporting cpus.',
+                        action = 'store_true')
+    parser.add_argument('-lg', '--gpulist',
+                        help = 'List all models supporting gpus.',
+                        action = 'store_true')
     parser.add_argument('-t1',required=True,
                         help = 'Path to the t1 modality.')
     parser.add_argument('-t1c',required=True,
@@ -73,7 +101,16 @@ def segmentation():
                         help = 'Pass this flag if your Docker version already supports the --gpus flag.')
     try:
         if '-l' in sys.argv[1:] or '--list' in sys.argv[1:]:
+            list_docker_ids()
+            sys.exit(0)
+        elif '-ll' in sys.argv[1:] or '--longlist' in sys.argv[1:]:
             list_dockers()
+            sys.exit(0)
+        elif '-lg' in sys.argv[1:] or '--gpulist' in sys.argv[1:]:
+            list_docker_gpu()
+            sys.exit(0)
+        elif '-lc' in sys.argv[1:] or '--cpulist' in sys.argv[1:]:
+            list_docker_cpu()
             sys.exit(0)
         else:
             args = parser.parse_args()

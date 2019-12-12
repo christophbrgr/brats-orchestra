@@ -43,7 +43,7 @@ Check the file `dockers.json` for a list of all available containers. This list 
 *You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
 
 ```bash
-(orchestra) Christophs-MBP:brats-orchestra christoph$ brats-segment
+christoph$ brats-segment
 brats-segment: error: the following arguments are required: -t1, -t1c, -t2, -fla, -d/--docker, -o/--output
 usage: brats-segment [-h] [-l] -t1 T1 -t1c T1C -t2 T2 -fla FLA -d DOCKER -o OUTPUT
               [-v] [-c CONFIG] [-g]
@@ -91,7 +91,7 @@ SIMPLE is an iterative method for performance estimation of candidate segmentati
 *You can also use all the segmentation and fusion features from the command line, just try it for yourself after installing the module.*
 
 ```bash
-(orchestra) Christophs-MBP:brats-orchestra christoph$ brats-fuse -h
+christoph$ brats-fuse -h
 usage: brats-fuse [-h] -i INPUT -m METHOD [-o OUTPUT] [-v]
 
 Runs the Docker orchestra to fuse segmentations. All inputs have to have equal
