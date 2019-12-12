@@ -13,7 +13,7 @@
         "author":"Richard McKinley",
         "fileformat":"b17-t1",
         "runtime":"nvidia",
-        "id":"mckinleyscan/brats:v1",
+        "id":"mckinleyscan/brats:v2",
         "command":"python DeepSCAN_BRATS.py",
         "mountpoint":"/data"
     },
