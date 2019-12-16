@@ -133,7 +133,7 @@ class Segmentor(object):
         Runs all containers on a given input
         '''
         logging.debug('CALLED MULTISEGMENT')
-        fusion = fusionator.Fusionator(method)
+        fusion = fusionator.Fusionator()
         for cid in self.config.keys():
             # replace this with a call to single-segment
             logging.info('[Orchestra] Segmenting with ' + cid)
@@ -156,7 +156,7 @@ class Segmentor(object):
                 resultsDir = self._handleResult(cid, resultsDir, outputPath=saveLocation)
             else:
                 logging.exception('Container run for CID {} failed!'.format(cid))
-        fusion.dirFuse(outputDir, outputName)
+        fusion.dirFuse(outputDir, method=method, outputName=outputName)
     
     def singleSegment(self, tempDir, inputs, cid, outputName, outputDir):
         '''

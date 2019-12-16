@@ -15,8 +15,7 @@ from .util import own_itk as oitk
 from .util import filemanager as fm
 
 class Fusionator(object):
-    def __init__(self, method, verbose=True):
-        self.method = method
+    def __init__(self, verbose=True):
         self.verbose = verbose
 
     def binaryMav(self, candidates, weights=None):
@@ -29,8 +28,12 @@ class Fusionator(object):
         # manage empty calls
         if num == 0:
             print('ERROR! No segmentations to fuse.')
+        elif num == 1: 
+            return candidates[0]
         if self.verbose:
             print ('Number of segmentations to be fused using compound majority vote is: ', num)
+            for c in candidates:
+                print('Candidate with shape {} and values {} and sum {}'.format(c.shape, np.unique(c), np.sum(c)))
         # load first segmentation and use it to create initial numpy arrays
         temp = candidates[0]
         result = np.zeros(temp.shape)
@@ -43,13 +46,14 @@ class Fusionator(object):
             label[c == 1] += 1.0*w
         num = sum(weights)
         result[label >= (num/2.0)] = 1
-        print('Shape of result:', result.shape)
-        print('Shape of current input array:', temp.shape)
-        print('Labels and datatype of current input:', result.max(), 
+        if self.verbose:
+            print('Shape of result:', result.shape)
+            print('Shape of current input array:', temp.shape)
+            print('Labels and datatype of current output:', result.max(), 
                                             result.min(), result.dtype)
         return result
 
-    def mav(self, candidates, weights=None):
+    def mav(self, candidates, labels=None, weights=None):
         '''
         Majority voting for an arbitrary number of classes
         '''
@@ -61,7 +65,10 @@ class Fusionator(object):
             print('ERROR! No segmentations to fuse.')
         if self.verbose:
             print ('Number of segmentations to be fused using compound majority vote is: ', num)
-        labels = np.unique(candidates[0])
+        # if no labels are passed, get the labels from the first input file (might lead to misisng labels!)
+        if labels==None:
+            labels = np.unique(candidates[0])
+            logging.warning('No labels passed, choosing those labels automatically: {}'.format(labels))
         # remove background label
         if 0 in labels:
             labels = np.delete(labels, 0)
@@ -77,12 +84,13 @@ class Fusionator(object):
                 label[c == l] += 1.0*w
             num = sum(weights)
             result[label >= (num/2.0)] = l
-        print('Shape of result:', result.shape)
-        print('Labels and datatype of result:', result.max(), 
+        if self.verbose:
+            print('Shape of result:', result.shape)
+            print('Labels and datatype of result:', result.max(), 
                                             result.min(), result.dtype)
         return result
 
-    def simple(self, candidates, weights=None, t=0.05, stop=25, inc=0.07, method='dice', iterations=25):
+    def simple(self, candidates, weights=None, t=0.05, stop=25, inc=0.07, method='dice', iterations=25, labels=None):
         '''
         SIMPLE implementation using DICE scoring
 
@@ -107,7 +115,13 @@ class Fusionator(object):
         if weights == None:
             weights = itertools.repeat(1,num)
         # get unique labels for multi-class fusion
-        labels = np.unique(candidates[0])
+        if labels == None:
+            labels = np.unique(candidates[0])
+            for c in candidates:
+                labels = np.append(labels, np.unique(c))
+                print('Labels of current candidate: {}, dtype: {}'.format(np.unique(c), c.dtype))
+            labels = np.unique(labels).astype(int)
+            logging.warning('No labels passed, choosing those labels automatically: {}'.format(labels))
         result = np.zeros(candidates[0].shape)
         # remove background label
         if 0 in labels:
@@ -115,9 +129,12 @@ class Fusionator(object):
         logging.info('Fusing a segmentation with the labels: {}'.format(labels))
         # loop over each label
         for l in sorted(labels):
-            # load first segmentation and use it to create initial numpy arrays
-            bin_candidates = [(c == l).astype(int) for c in candidates]
-            print(bin_candidates[0].shape)
+            if self.verbose:
+                print('Currently fusing label {}'.format(l))
+            # load first segmentation and use it to create initial numpy arrays IFF it contains labels
+            bin_candidates = [(c == l).astype(int) for c in candidates if np.sum((c == l).astype(int)) > 0]
+            if self.verbose:
+                print(bin_candidates[0].shape)
             # baseline estimate
             estimate = self.binaryMav(bin_candidates, weights)
             #initial convergence baseline
@@ -148,14 +165,15 @@ class Fusionator(object):
                 conv = np.sum(estimate)
             # assign correct label to result
             result[estimate == 1] = l
-        print('Shape of result:', result.shape)
-        print('Shape of current input array:', bin_candidates[0].shape)
-        print('Labels and datatype of current input:', result.max(), 
-                                            result.min(), result.dtype)
+        if self.verbose:
+            print('Shape of result:', result.shape)
+            print('Shape of current input array:', bin_candidates[0].shape)
+            print('Labels and datatype of current output:', result.max(), 
+                                                result.min(), result.dtype)
         return result
 
-    def dirFuse(self, directory, outputName=None):
-        if self.method == 'all':
+    def dirFuse(self, directory, method='mav', outputName=None):
+        if method == 'all':
             return
         candidates = []
         weights = []
@@ -172,26 +190,28 @@ class Fusionator(object):
                     print('Loaded: ' + os.path.join(directory, file))
                 except Exception as e:
                     print('VERY VERY BAD, this should be logged somewhere: ' + e)
-        if self.method == 'mav':
+        if method == 'mav':
+            print('Orchestra: Now fusing all .nii.gz files in directory {} using MAJORITY VOTING. For more output, set the -v or --verbose flag or instantiate the fusionator class with verbose=true'.format(directory))
             result = self.mav(candidates, weights)
-        elif self.method == 'simple':
+        elif method == 'simple':
+            print('Orchestra: Now fusing all .nii.gz files in directory {} using SIMPLE. For more output, set the -v or --verbose flag or instantiate the fusionator class with verbose=true'.format(directory))
             result = self.simple(candidates, weights)
         try:
             if outputName == None:
-                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, self.method + '_fusion.nii.gz'))
+                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, method + '_fusion.nii.gz'))
             else:
                 oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, outputName))
-            logging.info('Segmentation Fusion with method {} saved in directory {}.'.format(self.method, directory))
+            logging.info('Segmentation Fusion with method {} saved in directory {}.'.format(method, directory))
         except Exception as e:
             print('Very bad, this should also be logged somewhere: ' + str(e))
             logging.exception('Issues while saving the resulting segmentation: {}'.format(str(e)))
     
-    def fuse(self, outputPath):
+    def fuse(self, outputPath, method='mav'):
         # load segmentations into list:
         candidates = []
-        if self.method == 'mav':
+        if method == 'mav':
             result = self.mav(candidates)
-        elif self.method == 'simple':
+        elif method == 'simple':
             result = self.simple(candidates)
         else:
             pass

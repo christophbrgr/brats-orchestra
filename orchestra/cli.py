@@ -56,8 +56,8 @@ def fusion():
         sys.exit(e.code)
     try:
         # runs the segmentation with all the settings wished for by the user
-        fus = fusionator.Fusionator(method=args.method, verbose=args.verbose)
-        fus.dirFuse(args.input, outputName=args.output)
+        fus = fusionator.Fusionator(verbose=args.verbose)
+        fus.dirFuse(args.input, method=args.method, outputName=args.output)
     except subprocess.CalledProcessError as e:
         # Ignoring errors happening in the Docker Process, otherwise we'd e.g. get error messages on exiting the Docker via CTRL+D.
         pass
