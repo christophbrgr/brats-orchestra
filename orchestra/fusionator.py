@@ -200,7 +200,9 @@ class Fusionator(object):
             if outputName == None:
                 oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, method + '_fusion.nii.gz'))
             else:
-                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), op.join(directory, outputName))
+                outputDir = op.dirname(outputName)
+                os.makedirs(outputDir, exist_ok=True)
+                oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(temp)), outputName)
             logging.info('Segmentation Fusion with method {} saved in directory {}.'.format(method, directory))
         except Exception as e:
             print('Very bad, this should also be logged somewhere: ' + str(e))
