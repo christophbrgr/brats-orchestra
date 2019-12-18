@@ -41,7 +41,7 @@ class Fusionator(object):
         label = np.zeros(temp.shape)
         for c, w in zip(candidates, weights):
             if c.max() != 1 or c.min() != 0:
-                raise ValueError('The passed segmentation contains labels other than 1 and 0.')
+                logging.warning('The passed segmentation contains labels other than 1 and 0.')
             print('weight is: ' + str(w))
             label[c == 1] += 1.0*w
         num = sum(weights)
@@ -132,7 +132,7 @@ class Fusionator(object):
             if self.verbose:
                 print('Currently fusing label {}'.format(l))
             # load first segmentation and use it to create initial numpy arrays IFF it contains labels
-            bin_candidates = [(c == l).astype(int) for c in candidates if np.sum((c == l).astype(int)) > 0]
+            bin_candidates = [(c == l).astype(int) for c in candidates]
             if self.verbose:
                 print(bin_candidates[0].shape)
             # baseline estimate
@@ -142,7 +142,7 @@ class Fusionator(object):
             # check if the estimate was reasonable
             if conv == 0:
                 logging.error('Majority Voting in SIMPLE returned an empty array')
-                return np.zeros(candidates[0].shape)
+                # return np.zeros(candidates[0].shape)
             # reset tau before each iteration
             tau = t
             for i in range(iterations):
