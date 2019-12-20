@@ -88,9 +88,9 @@ class Segmentor(object):
             command = ' docker run --rm '
         if self.config[id]['runtime'] == 'nvidia':
             if self.dockerGPU:
-                command = 'CUDA_VISIBLE_DEVICES='+self.gpu + command + '--gpus all -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
+                command = 'NV_GPU='+self.gpu + command + '--gpus all -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
             else:
-                command = 'CUDA_VISIBLE_DEVICES='+self.gpu + command + '--runtime=nvidia -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
+                command = 'NV_GPU='+self.gpu + command + '--runtime=nvidia -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         else:
             command = command + '-v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         try:
