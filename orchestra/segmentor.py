@@ -39,6 +39,7 @@ class Segmentor(object):
         self.verbose = verbose
         self.tty = tty
         self.dockerGPU = newdocker
+        self.gpu =gpu
         self.package_directory = op.dirname(op.abspath(__file__))
         # set environment variables to limit GPU usage
         os.environ['CUDA_DEVICE_ORDER']='PCI_BUS_ID'   # see issue #152
@@ -82,14 +83,14 @@ class Segmentor(object):
         Runs one container on one patient folder
         '''
         if self.tty:
-            command = 'docker run --rm -it '
+            command = ' docker run --rm -it '
         else:
-            command = 'docker run --rm '
+            command = ' docker run --rm '
         if self.config[id]['runtime'] == 'nvidia':
             if self.dockerGPU:
-                command = command + '--gpus all -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
+                command = 'CUDA_VISIBLE_DEVICES='+self.gpu + command + '--gpus all -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
             else:
-                command = command + '--runtime=nvidia -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
+                command = 'CUDA_VISIBLE_DEVICES='+self.gpu + command + '--runtime=nvidia -v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         else:
             command = command + '-v ' + str(directory) + ':' + str(self.config[id]['mountpoint']) + ' ' + str(self.config[id]['id']) + ' ' + str(self.config[id]['command'])
         try:
