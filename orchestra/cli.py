@@ -99,6 +99,8 @@ def segmentation():
                         help = 'Add a path to a custom config file for dockers here.')
     parser.add_argument('-g', '--gpu', action='store_true',
                         help = 'Pass this flag if your Docker version already supports the --gpus flag.')
+    parser.add_argument('-gi', '--gpuid',
+                        help = 'Specify the GPU bus ID to be used.')
     try:
         if '-l' in sys.argv[1:] or '--list' in sys.argv[1:]:
             list_docker_ids()
@@ -120,7 +122,7 @@ def segmentation():
         sys.exit(e.code)
     try:
         # runs the segmentation with all the settings wished for by the user
-        seg = segmentor.Segmentor(config=args.config, verbose=args.verbose, newdocker=args.gpu)
+        seg = segmentor.Segmentor(config=args.config, verbose=args.verbose, newdocker=args.gpu, gpu=str(args.gpuid))
         seg.segment(t1=args.t1, t1c=args.t1c, t2=args.t2, fla=args.fla, cid=args.docker, outputPath=args.output)
     except subprocess.CalledProcessError as e:
         # Ignoring errors happening in the Docker Process, otherwise we'd e.g. get error messages on exiting the Docker via CTRL+D.

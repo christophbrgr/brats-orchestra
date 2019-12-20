@@ -25,14 +25,12 @@ from .util import own_itk as oitk
 from .util import filemanager as fm
 from . import fusionator
 
-#set id of gpu to use for computations
-gpu = '0'
 
 class Segmentor(object):
     '''
     Now does it all!
     '''
-    def __init__(self, config=None, fileformats=None, verbose=True, tty=False, newdocker=True):
+    def __init__(self, config=None, fileformats=None, verbose=True, tty=False, newdocker=True, gpu='0'):
         ''' Init the orchestra class with placeholders
         '''
         self.noOfContainers = 0
