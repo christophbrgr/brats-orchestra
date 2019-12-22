@@ -114,6 +114,7 @@ class Fusionator(object):
         # handle unpassed weights
         if weights == None:
             weights = itertools.repeat(1,num)
+        backup_weights = weights # ugly save to reset weights after each round
         # get unique labels for multi-class fusion
         if labels == None:
             labels = np.unique(candidates[0])
@@ -161,10 +162,14 @@ class Fusionator(object):
                 tau = tau+inc
                 # check if it converges
                 if np.abs(conv-np.sum(estimate)) < stop:
+                    if self.verbose: 
+                        print('Convergence for label {} after {} iterations reached.'.format(l, i))
                     break
                 conv = np.sum(estimate)
             # assign correct label to result
             result[estimate == 1] = l
+            # reset weights
+            weights = backup_weights
         if self.verbose:
             print('Shape of result:', result.shape)
             print('Shape of current input array:', bin_candidates[0].shape)
@@ -189,7 +194,7 @@ class Fusionator(object):
                     weights.append(1)
                     print('Loaded: ' + os.path.join(directory, file))
                 except Exception as e:
-                    print('VERY VERY BAD, this should be logged somewhere: ' + e)
+                    print('Could not load this file: ' + file + ' \nPlease check if this is a valid path and that the files exists. Exception: ' + e)
         if method == 'mav':
             print('Orchestra: Now fusing all .nii.gz files in directory {} using MAJORITY VOTING. For more output, set the -v or --verbose flag or instantiate the fusionator class with verbose=true'.format(directory))
             result = self.mav(candidates, weights)
@@ -208,17 +213,42 @@ class Fusionator(object):
             print('Very bad, this should also be logged somewhere: ' + str(e))
             logging.exception('Issues while saving the resulting segmentation: {}'.format(str(e)))
     
-    def fuse(self, outputPath, method='mav'):
-        # load segmentations into list:
+    def fuse(self, segmentations, outputPath, method='mav', weights=None):
+        '''
+        Pass a list of paths to files of the same shape for one scan. 
+        Can also handle a list of weights (optional)
+        '''
         candidates = []
-        if method == 'mav':
-            result = self.mav(candidates)
-        elif method == 'simple':
-            result = self.simple(candidates)
+        if weights is not None: 
+            if len(weights) != len(segmentations):
+                raise IOError('Please pass a matching number of weights and segmentation files')
+            w_weights = weights
         else:
-            pass
-
-        return result
+            w_weights = []
+        for seg in segmentations:
+            if seg.endswith('.nii.gz'):
+                try:
+                    candidates.append(oitk.get_itk_array(oitk.get_itk_image(seg)))
+                    if weights is None:
+                        w_weights.append(1)
+                    print('Loaded: ' + seg)
+                except Exception as e:
+                    print('Could not load this file: ' + seg + ' \nPlease check if this is a valid path and that the files exists. Exception: ' + str(e))
+                    raise
+        if method == 'mav':
+            print('Orchestra: Now fusing all passed .nii.gz files using MAJORITY VOTING. For more output, set the -v or --verbose flag or instantiate the fusionator class with verbose=true')
+            result = self.mav(candidates, weights)
+        elif method == 'simple':
+            print('Orchestra: Now fusing all passed .nii.gz files in using SIMPLE. For more output, set the -v or --verbose flag or instantiate the fusionator class with verbose=true')
+            result = self.simple(candidates, weights)
+        try:
+            outputDir = op.dirname(outputPath)
+            os.makedirs(outputDir, exist_ok=True)
+            oitk.write_itk_image(oitk.make_itk_image(result, proto_image=oitk.get_itk_image(seg)), outputPath)
+            logging.info('Segmentation Fusion with method {} saved as {}.'.format(method, outputPath))
+        except Exception as e:
+            print('Very bad, this should also be logged somewhere: ' + str(e))
+            logging.exception('Issues while saving the resulting segmentation: {}'.format(str(e)))
     
     def _score(self, seg, gt, method='dice'):
         ''' Calculates a similarity score based on the
