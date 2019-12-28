@@ -3,7 +3,7 @@
 BraTS ensemble code based on the Docker images used in the BraTS Challenge 2018
 
 **Author: Christoph Berger**
-**Version: 0.0.8**
+**Version: 0.0.14**
 
 ## Prerequisites
 

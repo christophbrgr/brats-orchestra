@@ -184,13 +184,15 @@ class Segmentor(object):
         return None
 
 
-    def segment(self, t1=None, t2=None, t1c=None, fla=None, cid='mocker', outputPath=None):
+    def segment(self, t1=None, t1c=None, t2=None, fla=None, cid='mocker', outputPath=None):
         outputDir = op.dirname(outputPath)
         outputName = op.basename(outputPath)
-        logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename=op.join(outputDir, 'debug.log'),level=logging.DEBUG)
-        logging.info('Now running a new set of segmentations on input: {}'.format(op.dirname(t1)))
+        if outputPath is not None:
+            os.makedirs(outputDir, exist_ok=True)
+        logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename=op.join(outputDir, 'segmentor.log'),level=logging.DEBUG)
         logging.debug('DIRNAME is: ' + outputDir)
         logging.debug('FILENAME is: ' + outputName)
+        logging.info('Now running a new set of segmentations on input: {}'.format(op.dirname(t1)))
         # switch between 
         inputs = {'t1':t1, 't2':t2, 't1c':t1c, 'fla':fla}
         # create temporary directory for storage
@@ -218,7 +220,9 @@ class Segmentor(object):
         Segmentation result before returning
         '''
         # Todo: Find segmentation result
-        contents = glob.glob(op.join(directory,'*tumor*.nii*'))
+        contents = glob.glob(op.join(directory,'*'+cid+'*.nii*'))
+        if len(contents) == 0:
+            contents = glob.glob(op.join(directory,'*tumor*.nii*'))
         if len(contents) < 1:
             logging.error('[Weborchestra - Filehandling][Error] No segmentation saved, the container run has most likely failed.')
         elif len(contents) > 1:
@@ -226,7 +230,7 @@ class Segmentor(object):
             img = oitk.get_itk_image(contents[0])
         img = oitk.get_itk_image(contents[0])
         if outputPath != None:
-            #os.makedirs(outputPath, exist_ok=True)
+            os.makedirs(op.basename(outputPath), exist_ok=True)
             savePath = outputPath
             logging.info('Saving to the user-specified directory: {}'.format(savePath))
         else:
