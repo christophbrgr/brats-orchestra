@@ -254,6 +254,8 @@ class Segmentor(object):
             print('found files: {}'.format(contents))
             img = oitk.get_itk_image(contents[0])
         img = oitk.get_itk_image(contents[0])
+        for c in contents:
+            os.remove(op.join(directory,c))
         oitk.write_itk_image(img, outputPath)
 
     def _format(self, fileformat, configpath, verbose=True):
