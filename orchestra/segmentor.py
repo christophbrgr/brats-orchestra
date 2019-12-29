@@ -152,10 +152,10 @@ class Segmentor(object):
                     logging.info('[Weborchestra][Success] Segmentation saved')
                 resultsDir = op.join(tempDir, 'results/')
                 saveLocation = op.join(outputDir, cid + '_tumor_seg.nii.gz')
-                resultsDir = self._handleResult(cid, resultsDir, outputPath=saveLocation)
+                self._handleResult(cid, resultsDir, outputPath=saveLocation)
             else:
                 logging.exception('Container run for CID {} failed!'.format(cid))
-        fusion.dirFuse(outputDir, method=method, outputName=outputName)
+        fusion.dirFuse(outputDir, method=method, outputName=op.join(outputDir, outputName))
     
     def singleSegment(self, tempDir, inputs, cid, outputName, outputDir):
         '''
@@ -176,19 +176,16 @@ class Segmentor(object):
             if self.verbose:
                 logging.info('[Weborchestra][Success] Segmentation saved')
             resultsDir = op.join(tempDir, 'results/')
-            resultsDir = self._handleResult(cid, resultsDir, outputPath=op.join(outputDir, outputName))
+            self._handleResult(cid, resultsDir, outputPath=op.join(outputDir, outputName))
             # delete tmp directory if result was saved elsewhere
-            return resultsDir
         if self.verbose:
             logging.error('[Weborchestra][Error] Segmentation failed, see output!')
         return None
 
 
     def segment(self, t1=None, t1c=None, t2=None, fla=None, cid='mocker', outputPath=None):
-        outputDir = op.dirname(outputPath)
-        outputName = op.basename(outputPath)
-        if outputPath is not None:
-            os.makedirs(outputDir, exist_ok=True)
+        #### Call output method here
+        outputName, outputDir = self._whereDoesTheFileGo(outputPath, t1, cid)
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename=op.join(outputDir, 'segmentor.log'),level=logging.DEBUG)
         logging.debug('DIRNAME is: ' + outputDir)
         logging.debug('FILENAME is: ' + outputName)
@@ -214,6 +211,33 @@ class Segmentor(object):
 
     ### Private utility methods below ###
 
+    def _whereDoesTheFileGo(self, outputPath, t1path, cid):
+        if outputPath is None: 
+            outputDir = op.join(op.dirname(t1path), 'output')
+            outputName = cid + '_segmentation.nii.gz'
+        elif outputPath.endswith('.nii.gz'):
+            if '~' in outputPath:
+                outputPath = op.expanduser(outputPath)
+            # valid filename
+            outputDir = op.dirname(outputPath)
+            outputName = op.basename(outputPath)
+            # if only a filename is passed, use the t1 directory
+            if outputDir == '': 
+                outputDir = op.join(op.dirname(t1path), 'output')
+        else: 
+            outputDir = outputName = None
+
+        if outputDir is None or outputName is None: 
+            raise ValueError('The outputPath is ambiguous and cannot be determined! path: {}, t1path: {}, cid: {}'.format(outputPath, t1path, cid))
+        # build abspaths: 
+        outputDir = op.abspath(outputDir)
+        try: 
+            os.makedirs(outputDir, exist_ok=True)
+        except Exception as e: 
+            print('could not create target directory: {}'.format(outputDir))
+            raise e
+        return outputName, outputDir
+
     def _handleResult(self, cid, directory, outputPath):
         '''
         This function handles the copying and renaming of the
@@ -227,17 +251,10 @@ class Segmentor(object):
             logging.error('[Weborchestra - Filehandling][Error] No segmentation saved, the container run has most likely failed.')
         elif len(contents) > 1:
             logging.error('[Weborchestra - Filehandling][Warning] Multiple Segmentations Found')
+            print('found files: {}'.format(contents))
             img = oitk.get_itk_image(contents[0])
         img = oitk.get_itk_image(contents[0])
-        if outputPath != None:
-            os.makedirs(op.basename(outputPath), exist_ok=True)
-            savePath = outputPath
-            logging.info('Saving to the user-specified directory: {}'.format(savePath))
-        else:
-            savePath = op.join(directory, 'tumor_segm.nii.gz')
-            logging.info('Saving to the temporary directory: {}'.format(savePath))
-        oitk.write_itk_image(img, savePath)
-        return savePath
+        oitk.write_itk_image(img, outputPath)
 
     def _format(self, fileformat, configpath, verbose=True):
         # load fileformat for a given container
