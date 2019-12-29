@@ -244,7 +244,7 @@ class Segmentor(object):
         Segmentation result before returning
         '''
         # Todo: Find segmentation result
-        contents = glob.glob(op.join(directory,'*'+cid+'*.nii*'))
+        contents = glob.glob(op.join(directory, cid+'*.nii*'))
         if len(contents) == 0:
             contents = glob.glob(op.join(directory,'*tumor*.nii*'))
         if len(contents) < 1:
