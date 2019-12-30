@@ -178,9 +178,8 @@ class Segmentor(object):
             resultsDir = op.join(tempDir, 'results/')
             self._handleResult(cid, resultsDir, outputPath=op.join(outputDir, outputName))
             # delete tmp directory if result was saved elsewhere
-        if self.verbose:
+        else:
             logging.error('[Weborchestra][Error] Segmentation failed, see output!')
-        return None
 
 
     def segment(self, t1=None, t1c=None, t2=None, fla=None, cid='mocker', outputPath=None):
