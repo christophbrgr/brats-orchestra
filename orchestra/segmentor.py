@@ -100,6 +100,7 @@ class Segmentor(object):
             if 'exit status 125' in str(e):
                 logging.error('DOCKER DAEMON not running! Please start your Docker runtime.')
                 sys.exit(125)
+            return False
         if self.verbose:
             logging.info('Container exited without error')
         return True
