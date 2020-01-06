@@ -10,7 +10,7 @@ t1c ='/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/BraTS19_CBICA_AQV_1/t1ce
 flair = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/BraTS19_CBICA_AQV_1/flair.nii.gz'
 outpath = '/Users/christoph/Documents/Uni/HiWi/IBBM/Testdata/outputForOrc/file.nii.gz'
 print('Test 1')
-seg.segment(t1, t1c, t2, flair, cid='mocker2', outputPath=outpath)
+seg.segment(t1, t1c, t2, flair, cid='mav', outputPath=outpath)
 print('Test 2')
 seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mocker2', outputPath=outpath)
 #seg.segment(t1=t1, t1c=t1c, t2=t2, fla=flair, cid='mocker', outputPath=None)

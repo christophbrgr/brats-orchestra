@@ -130,7 +130,14 @@ class Segmentor(object):
 
     def multiSegment(self, tempDir, inputs, method, outputName, outputDir):
         '''
-        Runs all containers on a given input
+        multiSegment [summary]
+        
+        Args:
+            tempDir ([type]): [description]
+            inputs ([type]): [description]
+            method ([type]): [description]
+            outputName ([type]): [description]
+            outputDir ([type]): [description]
         '''
         logging.debug('CALLED MULTISEGMENT')
         fusion = fusionator.Fusionator()
@@ -160,7 +167,14 @@ class Segmentor(object):
     
     def singleSegment(self, tempDir, inputs, cid, outputName, outputDir):
         '''
-        Segments the passed input with one container
+        singleSegment [summary]
+        
+        Args:
+            tempDir ([type]): [description]
+            inputs ([type]): [description]
+            cid ([type]): [description]
+            outputName ([type]): [description]
+            outputDir ([type]): [description]
         '''
         ff = self._format(self.getFileFormat(cid), self.fileformats)
         for key, img in inputs.items():
@@ -184,6 +198,17 @@ class Segmentor(object):
 
 
     def segment(self, t1=None, t1c=None, t2=None, fla=None, cid='mocker', outputPath=None):
+        '''
+        segment [summary]
+        
+        Args:
+            t1 ([type], optional): [description]. Defaults to None.
+            t1c ([type], optional): [description]. Defaults to None.
+            t2 ([type], optional): [description]. Defaults to None.
+            fla ([type], optional): [description]. Defaults to None.
+            cid (str, optional): [description]. Defaults to 'mocker'.
+            outputPath ([type], optional): [description]. Defaults to None.
+        '''
         #### Call output method here
         outputName, outputDir = self._whereDoesTheFileGo(outputPath, t1, cid)
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s', filename=op.join(outputDir, 'segmentor.log'),level=logging.DEBUG)

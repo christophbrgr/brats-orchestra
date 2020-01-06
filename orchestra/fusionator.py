@@ -20,8 +20,16 @@ class Fusionator(object):
 
     def binaryMav(self, candidates, weights=None):
         '''
-        Majority-voting for binary segmentation masks (0 background, 1 foreground)
-        '''
+        binaryMav performs majority vote fusion on an arbitary number of input segmentations with
+        only two classes each (1 and 0).
+        
+        Args:
+            candidates (list): the candidate segmentations as binary numpy arrays of same shape
+            weights (list, optional): associated weights for each segmentation in candidates. Defaults to None.
+        
+        Return
+            array: a numpy array with the majority vote result
+        '''       
         num = len(candidates)
         if weights == None:
             weights = itertools.repeat(1,num)
@@ -55,7 +63,16 @@ class Fusionator(object):
 
     def mav(self, candidates, labels=None, weights=None):
         '''
-        Majority voting for an arbitrary number of classes
+        mav performs majority vote fusion on an arbitary number of input segmentations with
+        an arbitrary number of labels. 
+        
+        Args:
+            candidates (list): the candidate segmentations as binary numpy arrays of same shape
+            labels (list, optional): a list of labels present in the candidates. Defaults to None.
+            weights (list, optional): weights for the fusion. Defaults to None.
+        
+        Returns:
+            array: a numpy array with the majority vote result
         '''
         num = len(candidates)
         if weights == None:
@@ -83,6 +100,7 @@ class Fusionator(object):
                 print('weight is: ' + str(w))
                 label[c == l] += 1.0*w
             num = sum(weights)
+            print(num)
             result[label >= (num/2.0)] = l
         if self.verbose:
             print('Shape of result:', result.shape)
@@ -92,17 +110,25 @@ class Fusionator(object):
 
     def simple(self, candidates, weights=None, t=0.05, stop=25, inc=0.07, method='dice', iterations=25, labels=None):
         '''
-        SIMPLE implementation using DICE scoring
+        simple implementation using DICE scoring
+        Iteratively estimates the accuracy of the segmentations and dynamically assigns weights 
+        for the next iteration. Continues for each label until convergence is reached. 
 
-        Params:
-        t: Tau value for dropout, candidate segmentations are removed if
-            their weight is smaller than tau * (best score of current 
-            iteration)
-        stop:   convergence criterium, when less than 25 labels change during
-                a given iteration, convergence is assumed and the iteration stops
-        inc:    the increment by which tau increases with every iteration
-        iterations: if no convergence is reached, this is the maximum number of 
-                    iterations (per label!) until execution stops
+        Args:
+            candidates (list): [description]
+            weights (list, optional): [description]. Defaults to None.
+            t (float, optional): [description]. Defaults to 0.05.
+            stop (int, optional): [description]. Defaults to 25.
+            inc (float, optional): [description]. Defaults to 0.07.
+            method (str, optional): [description]. Defaults to 'dice'.
+            iterations (int, optional): [description]. Defaults to 25.
+            labels (list, optional): [description]. Defaults to None.
+        
+        Raises:
+            IOError: If no segmentations to be fused are passed
+        
+        Returns:
+            array: a numpy array with the SIMPLE fusion result
         '''
         # manage empty calls
         num = len(candidates)
@@ -178,6 +204,14 @@ class Fusionator(object):
         return result
 
     def dirFuse(self, directory, method='mav', outputName=None):
+        '''
+        dirFuse [summary]
+        
+        Args:
+            directory ([type]): [description]
+            method (str, optional): [description]. Defaults to 'mav'.
+            outputName ([type], optional): [description]. Defaults to None.
+        '''
         if method == 'all':
             return
         candidates = []
@@ -215,8 +249,16 @@ class Fusionator(object):
     
     def fuse(self, segmentations, outputPath, method='mav', weights=None):
         '''
-        Pass a list of paths to files of the same shape for one scan. 
-        Can also handle a list of weights (optional)
+        fuse [summary]
+        
+        Args:
+            segmentations ([type]): [description]
+            outputPath ([type]): [description]
+            method (str, optional): [description]. Defaults to 'mav'.
+            weights ([type], optional): [description]. Defaults to None.
+        
+        Raises:
+            IOError: [description]
         '''
         candidates = []
         if weights is not None: 
